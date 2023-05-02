@@ -1,7 +1,7 @@
-
 import model.Zoologico as model
 import view.ZoologicoView as view
 import controller.ControllerZoologico as controller
+
 
 def menu():
     modelo = model.Zoologico()
@@ -9,7 +9,7 @@ def menu():
     controlador = controller.ControllerZoologico(modelo, vista)
     operacion = 1
 
-    while(operacion != 0):
+    while operacion != 0:
         print("1. Agregar habitat")
         print("2. Agregar Animal")
         print("3. Mostrar Dato Animal")
@@ -18,7 +18,7 @@ def menu():
 
         operacion = int(input())
         if operacion == 1:
-            print(1)
+            controlador.agregarHabitat()
         elif operacion == 2:
             print(2)
         elif operacion == 3:
@@ -33,4 +33,3 @@ def menu():
 
 if __name__ == '__main__':
     menu()
-
