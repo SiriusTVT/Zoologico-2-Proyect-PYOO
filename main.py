@@ -1,12 +1,18 @@
-import model.Zoologico as model
+import model.Zoologico as modelZoo
+import model.Habitat as modelHab
+import model.Animal as modelAnimal
+
 import view.ZoologicoView as view
 import controller.ControllerZoologico as controller
 
 
 def menu():
-    modelo = model.Zoologico()
+    modeloHab = modelHab.Habitat()
+    modeloAnimal = modelAnimal.Animal()
+    modeloZoo = modelZoo.Zoologico()
     vista = view.ZoologicoView()
-    controlador = controller.ControllerZoologico(modelo, vista)
+
+    controlador = controller.ControllerZoologico(modeloZoo, vista, modeloHab, modeloAnimal)
     operacion = 1
 
     while operacion != 0:
@@ -20,7 +26,7 @@ def menu():
         if operacion == 1:
             controlador.agregarHabitat()
         elif operacion == 2:
-            print(2)
+            controlador.agregarAnimal()
         elif operacion == 3:
             print(3)
         elif operacion == 4:
