@@ -29,3 +29,10 @@ class ControllerZoologico:
             self.modeloAnimal.dormir = self.vista.obtener_valorINT("Dormir: ")
 
             self.modeloAnimal.agregarAnimal(self.pHabitatAnimal)
+
+
+    def mostrarAnimal(self):
+        if self.modeloAnimal.contadorAnimal == 0:
+            print("No hay Animal Existente")
+        else:
+            self.modeloAnimal.mostrarAnimal()

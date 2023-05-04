@@ -28,7 +28,7 @@ def menu():
         elif operacion == 2:
             controlador.agregarAnimal()
         elif operacion == 3:
-            print(3)
+            controlador.mostrarAnimal()
         elif operacion == 4:
             print(4)
         elif operacion == 5:
