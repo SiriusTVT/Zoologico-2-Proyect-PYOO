@@ -8,6 +8,9 @@ class ControllerZoologico:
         self.habitatClase = []
         self.pHabitatAnimal = []
 
+        self.habitat = ""
+        self.comer = ""
+
     def agregarHabitat(self):
         self.modeloHab.entradaSTR = self.vista.obtener_valorSTR("Ingrese Habitat: ")
         self.modeloHab.agregarHabitat()
@@ -29,10 +32,15 @@ class ControllerZoologico:
             self.modeloAnimal.dormir = self.vista.obtener_valorINT("Dormir: ")
 
             self.modeloAnimal.agregarAnimal(self.pHabitatAnimal)
+            if self.modeloAnimal.contadorAnimal != 0:
+                self.habitat, self.comer = self.modeloAnimal.cuposHabitatAnimal()
+                self.modeloHab.cupos[self.habitat] += 1
 
+                self.modeloHab.dietaHabitat[self.habitat].append(self.comer)
 
     def mostrarAnimal(self):
         if self.modeloAnimal.contadorAnimal == 0:
             print("No hay Animal Existente")
         else:
             self.modeloAnimal.mostrarAnimal()
+            self.modeloHab.mostrarCupos()

@@ -4,8 +4,10 @@ class Habitat:
         self.listaHabitats = ["desertico", "selvatico", "polar", "acuatico"]
         self.AdHabitat = []
 
-        # self.atributo1 = 0 #cantidad de animales asignados en cada habitat
-        # self.atributo2 = 0 #los tipos de dieta que se encuentran en esa habitat
+        self.cupos = {"desertico":0,"selvatico":0, "polar":0, "acuatico":0}
+        # cantidad de animales asignados en cada habitat
+        self.dietaHabitat = {"desertico":[],"selvatico":[], "polar":[], "acuatico":[]}
+        # los tipos de dieta que se encuentran en esa habitat
 
     def Comprobante(self, habitat):
         for i in self.listaHabitats:
@@ -33,3 +35,11 @@ class Habitat:
 
         else:
             print("El dato no coincide con los habitas disponibles\n")
+
+    def mostrarCupos(self):
+        print("Cupos en Zoologico\n")
+        print(self.cupos)
+        print("\n")
+        print("Dietas Segun su Habitat\n")
+        print(self.dietaHabitat)
+        print("\n")

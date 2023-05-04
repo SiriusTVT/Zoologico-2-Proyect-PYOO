@@ -29,17 +29,26 @@ class Animal:
             self.contadorAnimal += 1
             ID = str(self.contadorAnimal)
 
-            self.diccionarioAnimal["Nombre" + " " + ID + ":"] = self.nombre
-            self.diccionarioAnimal["Especie" + " " + ID + ":"] = self.especie
-            self.diccionarioAnimal["Habitat" + " " + ID + ":"] = self.habitat
-            self.diccionarioAnimal["Comer" + " " + ID + ":"] = self.comer
-            self.diccionarioAnimal["Juego" + " " + ID + ":"] = self.juego
-            self.diccionarioAnimal["Edad" + " " + ID + ":"] = self.edad
-            self.diccionarioAnimal["Dormir" + " " + ID + ":"] = self.dormir
+            self.diccionarioAnimal["Nombre" + ID] = self.nombre
+            self.diccionarioAnimal["Especie" + ID] = self.especie
+            self.diccionarioAnimal["Habitat" + ID] = self.habitat
+            self.diccionarioAnimal["Comer" + ID] = self.comer
+            self.diccionarioAnimal["Juego" + ID] = self.juego
+            self.diccionarioAnimal["Edad" + ID] = self.edad
+            self.diccionarioAnimal["Dormir" + ID] = self.dormir
 
             print("Se agrego Correctamente\n")
 
     def mostrarAnimal(self):
+        print("Lista Animales:\n")
         for clave, valor in self.diccionarioAnimal.items():
             print(clave, valor)
         print("\n")
+
+    def cuposHabitatAnimal(self):
+        ID = str(self.contadorAnimal)
+        HabitatID = self.diccionarioAnimal["Habitat"+ID]
+        ComerID = self.diccionarioAnimal["Comer"+ID]
+
+        return HabitatID, ComerID
+
