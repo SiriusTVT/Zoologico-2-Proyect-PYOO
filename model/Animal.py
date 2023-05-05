@@ -58,9 +58,11 @@ class Animal:
     def alimentarAnimales(self, alimentos):
         operacion = ""
         operacion2 = ""
+        operacion3 = ""
 
         validacion1 = 0
         validacion2 = 0
+        contadorAlimentos = -1
         encontrado = False
 
         self.dicAlimentos = alimentos
@@ -77,6 +79,7 @@ class Animal:
                 validacion1 = 1
                 for elemento in self.dicAlimentos[clave]:
                     if operacion2 == elemento:
+                        contadorAlimentos += 1
                         validacion2 = 1
                         encontrado = True
                         break
@@ -84,6 +87,15 @@ class Animal:
                     break
         if validacion1 == 1 and validacion2 == 1:
             print("Se dio de comer correctamente al ", self.diccionarioAnimal["Especie"+operacion])
+            print("Se desea cambiar la alimentacion del ", self.diccionarioAnimal["Especie"+operacion])
+            operacion3 = str(input("Respuesta: -> "))
+            operacion3 = operacion3.lower()
+
+            if operacion3 == "si":
+                llave = self.diccionarioAnimal["Comer" + operacion]
+                operacion3 = str(input("Nueva alimentacion: -> "))
+                self.dicAlimentos[llave][contadorAlimentos] = operacion3
+                print("Se actualizo Correctamente\n")
 
         else:
             print("No se encontro el animal o el alimento no es correcto para el animal")
