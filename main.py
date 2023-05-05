@@ -30,7 +30,7 @@ def menu():
         elif operacion == 3:
             controlador.mostrarAnimal()
         elif operacion == 4:
-            print(4)
+            controlador.acciones(controlador)
         elif operacion == 5:
             print(5)
         else:

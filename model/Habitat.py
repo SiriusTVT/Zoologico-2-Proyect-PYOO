@@ -37,9 +37,7 @@ class Habitat:
             print("El dato no coincide con los habitas disponibles\n")
 
     def mostrarCupos(self):
-        print("Cupos en Zoologico\n")
-        print(self.cupos)
-        print("\n")
-        print("Dietas Segun su Habitat\n")
-        print(self.dietaHabitat)
-        print("\n")
+        print("Cupos en Zoologico")
+        print(self.cupos, "\n")
+        print("Dietas Segun su Habitat")
+        print(self.dietaHabitat, "\n")

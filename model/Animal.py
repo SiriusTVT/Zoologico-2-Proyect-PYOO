@@ -10,6 +10,7 @@ class Animal:
         self.diccionarioAnimal = {}
         self.contadorAnimal = 0
         self.habitatAnimal = []
+        self.dicAlimentos = {}
 
     def ComprobanteListaHabitat(self, habitat):
         for i in habitat:
@@ -40,15 +41,24 @@ class Animal:
             print("Se agrego Correctamente\n")
 
     def mostrarAnimal(self):
-        print("Lista Animales:\n")
-        for clave, valor in self.diccionarioAnimal.items():
-            print(clave, valor)
-        print("\n")
+        print("Lista Animales:")
+        print(self.diccionarioAnimal, "\n")
+
+        # for clave, valor in self.diccionarioAnimal.items():
+        #     print(clave, valor)
+        # print("\n")
 
     def cuposHabitatAnimal(self):
         ID = str(self.contadorAnimal)
-        HabitatID = self.diccionarioAnimal["Habitat"+ID]
-        ComerID = self.diccionarioAnimal["Comer"+ID]
+        HabitatID = self.diccionarioAnimal["Habitat" + ID]
+        ComerID = self.diccionarioAnimal["Comer" + ID]
 
         return HabitatID, ComerID
+
+    def alimentarAnimales(self, alimentos):
+        self.dicAlimentos = alimentos
+
+        self.mostrarAnimal()
+        print("Lista de Alimentos:")
+        print(self.dicAlimentos, "\n")
 

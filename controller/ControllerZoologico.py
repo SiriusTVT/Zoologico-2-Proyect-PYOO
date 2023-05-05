@@ -12,6 +12,7 @@ class ControllerZoologico:
         self.comer = ""
 
     def agregarHabitat(self):
+        print("Habitats Disponibles", self.modeloHab.listaHabitats, "\n")
         self.modeloHab.entradaSTR = self.vista.obtener_valorSTR("Ingrese Habitat: ")
         self.modeloHab.agregarHabitat()
         self.habitatClase = self.modeloHab.AdHabitat
@@ -36,6 +37,7 @@ class ControllerZoologico:
                 self.habitat, self.comer = self.modeloAnimal.cuposHabitatAnimal()
                 self.modeloHab.cupos[self.habitat] += 1
 
+                #no tener para un mismo habitat mas de 1 un tipo de alimentacion repetido
                 self.modeloHab.dietaHabitat[self.habitat].append(self.comer)
 
     def mostrarAnimal(self):
@@ -44,3 +46,12 @@ class ControllerZoologico:
         else:
             self.modeloAnimal.mostrarAnimal()
             self.modeloHab.mostrarCupos()
+
+    def acciones(self, controlador):
+        if self.modeloAnimal.contadorAnimal == 0:
+            print("No hay Animal Existente")
+        else:
+            self.modeloZoo.acciones(controlador)
+
+    def alimentarAnimales(self, alimentos):
+        self.modeloAnimal.alimentarAnimales(alimentos)
