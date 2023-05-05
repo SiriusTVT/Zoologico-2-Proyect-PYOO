@@ -56,9 +56,35 @@ class Animal:
         return HabitatID, ComerID
 
     def alimentarAnimales(self, alimentos):
+        operacion = ""
+        operacion2 = ""
+
+        validacion1 = 0
+        validacion2 = 0
+        encontrado = False
+
         self.dicAlimentos = alimentos
 
         self.mostrarAnimal()
         print("Lista de Alimentos:")
         print(self.dicAlimentos, "\n")
+
+        operacion = str(input("A Quien desea alimentar: ID -> "))
+        operacion2 = str(input("Tipo de Alimento: -> "))
+
+        for clave, valor in self.dicAlimentos.items():
+            if self.diccionarioAnimal["Comer"+operacion] == clave:
+                validacion1 = 1
+                for elemento in self.dicAlimentos[clave]:
+                    if operacion2 == elemento:
+                        validacion2 = 1
+                        encontrado = True
+                        break
+                if encontrado:
+                    break
+        if validacion1 == 1 and validacion2 == 1:
+            print("Se dio de comer correctamente al ", self.diccionarioAnimal["Especie"+operacion])
+
+        else:
+            print("No se encontro el animal o el alimento no es correcto para el animal")
 
