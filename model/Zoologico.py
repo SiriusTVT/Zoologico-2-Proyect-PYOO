@@ -24,7 +24,7 @@ class Zoologico:
             if operacion == 1:
                 self.controlador.alimentarAnimales(self.alimentos)
             elif operacion == 2:
-                print()
+                self.controlador.dormirAnimal()
             elif operacion == 3:
                 print()
             else:
