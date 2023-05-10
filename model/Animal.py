@@ -106,16 +106,19 @@ class Animal:
                 break
 
         for clave, valor in self.dicAlimentos.items():
-            if self.diccionarioAnimal["Comer" + operacion] == clave:
-                validacion1 = 1
-                for elemento in self.dicAlimentos[clave]:
-                    if operacion2 == elemento:
-                        contadorAlimentos += 1
-                        validacion2 = 1
-                        encontrado = True
+            try:
+                if self.diccionarioAnimal["Comer" + operacion] == clave:
+                    validacion1 = 1
+                    for elemento in self.dicAlimentos[clave]:
+                        if operacion2 == elemento:
+                            contadorAlimentos += 1
+                            validacion2 = 1
+                            encontrado = True
+                            break
+                    if encontrado:
                         break
-                if encontrado:
-                    break
+            except KeyError:
+                print("No existe Animal ID")
         if validacion1 == 1 and validacion2 == 1:
             print("Se dio de comer correctamente al ", self.diccionarioAnimal["Especie" + operacion])
             print("Se desea cambiar la alimentacion del ", self.diccionarioAnimal["Especie" + operacion])
@@ -161,15 +164,18 @@ class Animal:
                 print("Error Se esperaba un INT y se a ingresado una cadena")
                 print("Vuelva ingresar:")
 
-        guardaValor = self.diccionarioAnimal["Dormir" + operacion]
-        guardaValor2 = self.diccionarioAnimal["Dormir" + operacion] * 2
-        validacion1 = 1
-        # manejar excepcion
+        try:
+            guardaValor = self.diccionarioAnimal["Dormir" + operacion]
+            guardaValor2 = self.diccionarioAnimal["Dormir" + operacion] * 2
+            validacion1 = 1
 
-        if validacion1 == 1:
-            if guardaValor <= operacion2 <= guardaValor2:
-                self.diccionarioAnimal["Dormir" + operacion] = operacion2
-                print("Se cuadro correctamente las horas")
+            if validacion1 == 1:
+                if guardaValor <= operacion2 <= guardaValor2:
+                    self.diccionarioAnimal["Dormir" + operacion] = operacion2
+                    print("Se cuadro correctamente las horas")
+
+        except KeyError:
+            print("No existe Animal ID")
 
     def jugarAnimal(self):
         self.mostrarAnimal()
@@ -183,8 +189,11 @@ class Animal:
                 print("Error Se esperaba un INT y se a ingresado una cadena")
                 print("Vuelva ingresar:")
 
-        if self.diccionarioAnimal["Juego" + operacion] == "no":
-            self.diccionarioAnimal["Juego" + operacion] = "si"
-            print("El animal a jugado")
-        else:
-            print("Ya ha jugado")
+        try:
+            if self.diccionarioAnimal["Juego" + operacion] == "no":
+                self.diccionarioAnimal["Juego" + operacion] = "si"
+                print("El animal a jugado")
+            else:
+                print("Ya ha jugado")
+        except KeyError:
+            print("No existe Animal ID")

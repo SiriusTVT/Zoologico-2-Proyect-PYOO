@@ -25,7 +25,6 @@ def menu():
                 print("4. Acciones")
                 print("5. Mostrar alimentos")
 
-
                 operacion = int(input())
                 if operacion == 1:
                     controlador.agregarHabitat()
