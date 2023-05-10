@@ -39,13 +39,13 @@ class Animal:
         comprobante2 = self.ComprobanteAlimentos(self.alimentos)
         comprobante3 = self.ComprobanteHabitatAliementos(dietaHabitat)
 
-        #Habitat que no coincide con los habitats agregados
+        # Habitat que no coincide con los habitats agregados
         if comprobante == False:
             print("El Habitat del animal no coincide con los datos disponibles\n")
-        #Alimento que no coincide con la alimentacion disponible
+        # Alimento que no coincide con la alimentacion disponible
         if comprobante2 == False:
             print("El Alimento del animal no coincide con los datos disponibles\n")
-        #Alimento que no coincide con el tipo de alimentacion que se le asignado al habitat
+        # Alimento que no coincide con el tipo de alimentacion que se le asignado al habitat
         if comprobante3 == False:
             print("El Alimento del animal no coincide con el alimento asignado en el habitat\n")
         else:
@@ -56,7 +56,7 @@ class Animal:
             self.diccionarioAnimal["Especie" + ID] = self.especie
             self.diccionarioAnimal["Habitat" + ID] = self.habitat
             self.diccionarioAnimal["Comer" + ID] = self.comer
-            self.diccionarioAnimal["Juego" + ID] = self.juego
+            self.diccionarioAnimal["Juego" + ID] = self.juego.lower()
             self.diccionarioAnimal["Edad" + ID] = self.edad
             self.diccionarioAnimal["Dormir" + ID] = self.dormir
 
@@ -74,9 +74,7 @@ class Animal:
         return HabitatID, ComerID
 
     def alimentarAnimales(self, alimentos):
-        operacion = ""
         operacion2 = ""
-        operacion3 = ""
 
         validacion1 = 0
         validacion2 = 0
@@ -89,11 +87,26 @@ class Animal:
         print("Lista de Alimentos:")
         print(self.dicAlimentos, "\n")
 
-        operacion = str(input("A Quien desea alimentar: ID -> "))
-        operacion2 = str(input("Tipo de Alimento: -> "))
+        while True:
+            try:
+                operacion = int(input("A Quien desea alimentar: ID -> "))
+                operacion = str(operacion)
+                break
+            except ValueError:
+                print("Error Se esperaba un INT y se a ingresado una cadena")
+                print("Vuelva ingresar:")
+
+        while True:
+            try:
+                operacion2 = input("Tipo de Alimento: -> ")
+                int(operacion2)
+                print("Error Se esperaba un Cadena y se a ingresado una INT")
+                print("Vuelva ingresar:")
+            except ValueError:
+                break
 
         for clave, valor in self.dicAlimentos.items():
-            if self.diccionarioAnimal["Comer"+operacion] == clave:
+            if self.diccionarioAnimal["Comer" + operacion] == clave:
                 validacion1 = 1
                 for elemento in self.dicAlimentos[clave]:
                     if operacion2 == elemento:
@@ -104,39 +117,74 @@ class Animal:
                 if encontrado:
                     break
         if validacion1 == 1 and validacion2 == 1:
-            print("Se dio de comer correctamente al ", self.diccionarioAnimal["Especie"+operacion])
-            print("Se desea cambiar la alimentacion del ", self.diccionarioAnimal["Especie"+operacion])
+            print("Se dio de comer correctamente al ", self.diccionarioAnimal["Especie" + operacion])
+            print("Se desea cambiar la alimentacion del ", self.diccionarioAnimal["Especie" + operacion])
             operacion3 = str(input("Respuesta: -> "))
             operacion3 = operacion3.lower()
 
             if operacion3 == "si":
                 llave = self.diccionarioAnimal["Comer" + operacion]
-                operacion3 = str(input("Nueva alimentacion: -> "))
+                while True:
+                    try:
+                        operacion3 = input("Nueva alimentacion: -> ")
+                        int(operacion3)
+                        print("Error Se esperaba un Cadena y se a ingresado una INT")
+                        print("Vuelva ingresar:")
+                    except ValueError:
+                        break
+
                 self.dicAlimentos[llave][contadorAlimentos] = operacion3
                 print("Se actualizo Correctamente\n")
 
         else:
             print("No se encontro el animal o el alimento no es correcto para el animal")
 
-
     def dormirAnimal(self):
 
         validacion1 = 0
 
         self.mostrarAnimal()
-        operacion = str(input("Escoja un animal: -> "))
-        operacion2 = int(input("Cuantas horas Estima para el animal: : -> "))
+        while True:
+            try:
+                operacion = int(input("Escoja un animal: -> "))
+                operacion = str(operacion)
+                break
+            except ValueError:
+                print("Error Se esperaba un INT y se a ingresado una cadena")
+                print("Vuelva ingresar:")
+
+        while True:
+            try:
+                operacion2 = int(input("Cuantas horas Estima para el animal: : -> "))
+                break
+            except ValueError:
+                print("Error Se esperaba un INT y se a ingresado una cadena")
+                print("Vuelva ingresar:")
 
         guardaValor = self.diccionarioAnimal["Dormir" + operacion]
-        guardaValor2 = self.diccionarioAnimal["Dormir" + operacion]*2
+        guardaValor2 = self.diccionarioAnimal["Dormir" + operacion] * 2
         validacion1 = 1
-        #manejar excepcion
+        # manejar excepcion
 
         if validacion1 == 1:
-            if guardaValor <= operacion2 and  guardaValor2 >= operacion2:
-                self.diccionarioAnimal["Dormir"+operacion] = operacion2
+            if guardaValor <= operacion2 <= guardaValor2:
+                self.diccionarioAnimal["Dormir" + operacion] = operacion2
                 print("Se cuadro correctamente las horas")
 
+    def jugarAnimal(self):
+        self.mostrarAnimal()
 
+        while True:
+            try:
+                operacion = int(input("Escoja un animal: -> "))
+                operacion = str(operacion)
+                break
+            except ValueError:
+                print("Error Se esperaba un INT y se a ingresado una cadena")
+                print("Vuelva ingresar:")
 
-
+        if self.diccionarioAnimal["Juego" + operacion] == "no":
+            self.diccionarioAnimal["Juego" + operacion] = "si"
+            print("El animal a jugado")
+        else:
+            print("Ya ha jugado")

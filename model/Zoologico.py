@@ -26,9 +26,16 @@ class Zoologico:
             elif operacion == 2:
                 self.controlador.dormirAnimal()
             elif operacion == 3:
-                print()
+                self.controlador.jugarAnimal()
+            elif operacion == 0:
+                print("Saliendo al MENU principal")
             else:
                 print("Entrada Invalida")
+
+    def mostrarDatosAlimentos(self):
+        print("Alimentos segun su tipo\n")
+        print(self.alimentos)
+        print("\n")
 
 
 

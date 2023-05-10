@@ -64,3 +64,10 @@ class ControllerZoologico:
 
     def dormirAnimal(self):
         self.modeloAnimal.dormirAnimal()
+
+    def jugarAnimal(self):
+        self.modeloAnimal.jugarAnimal()
+
+    def mostrarDatosAlimentos(self):
+        self.modeloZoo.mostrarDatosAlimentos()
+
