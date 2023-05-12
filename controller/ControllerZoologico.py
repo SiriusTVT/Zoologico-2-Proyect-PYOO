@@ -1,3 +1,6 @@
+import streamlit as st
+
+
 class ControllerZoologico:
     def __init__(self, modeloZoo, vista, modeloHab, modeloAnimal):
         self.modeloAnimal = modeloAnimal
@@ -17,12 +20,12 @@ class ControllerZoologico:
         print("Habitats Agregados", self.modeloHab.AdHabitat, "\n")
         print("Habitats Disponibles", self.modeloHab.listaHabitats, "\n")
         print("Alimentacion Disponibles", self.alimentos, "\n")
-        self.modeloHab.entradaSTR = self.vista.obtener_valorSTR("Ingrese Habitat: ")
-        self.modeloHab.entradaAlimento = self.vista.obtener_valorSTR("Tipo de alimentacion de habitat: ")
+
+        # self.modeloHab.entradaSTR = self.vista.obtener_valorSTR("Ingrese Habitat: ")
+        # self.modeloHab.entradaAlimento = self.vista.obtener_valorSTR("Tipo de alimentacion de habitat: ")
         validacion = self.modeloHab.agregarHabitat()
 
         if validacion == 1:
-
             self.modeloHab.AlimentoHabitat(self.alimentos)
             self.habitatClase = self.modeloHab.AdHabitat
 
@@ -71,3 +74,21 @@ class ControllerZoologico:
     def mostrarDatosAlimentos(self):
         self.modeloZoo.mostrarDatosAlimentos()
 
+    # Menu Streamlit
+
+    def menuStreamlit(self, entrada):
+        validacion = 0
+        if entrada == 1:
+            st.divider()
+
+            habitatsAgregados = self.modeloHab.AdHabitat
+            listaHabitats = self.modeloHab.listaHabitats
+            alimentos = self.alimentos
+
+            st.write("Habitats Agregados: ", habitatsAgregados)
+            st.write("Habitats Disponibles: ", listaHabitats)
+            st.write("Alimentacion Disponibles: ", alimentos)
+
+            validacion = self.vista.crearHabitatStreamlit()
+            if validacion == 1:
+                self.agregarHabitat()

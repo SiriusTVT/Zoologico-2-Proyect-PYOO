@@ -5,7 +5,7 @@ class Habitat:
         self.listaHabitats = ["desertico", "selvatico", "polar", "acuatico"]
         self.AdHabitat = []
 
-        self.cupos = {"desertico":0,"selvatico":0, "polar":0, "acuatico":0}
+        self.cupos = {"desertico": 0, "selvatico": 0, "polar": 0, "acuatico": 0}
         self.dietaHabitat = {"desertico": "", "selvatico": "", "polar": "", "acuatico": ""}
         # los tipos de dieta que se permiten en esa habitat
 
@@ -14,19 +14,21 @@ class Habitat:
             if i == habitat.lower():
                 return True
         return False
+
     def ComprobanteListaHabitat(self, habitat):
         for i in self.AdHabitat:
             if i == habitat:
                 return True
         return False
-    #Comprueba el tipo de alimentacion del habitat existe en la dieta disponible
+
+    # Comprueba el tipo de alimentacion del habitat existe en la dieta disponible
     def ComprobanteAlimentos(self, alimentos):
         for clave, valor in alimentos.items():
             if self.entradaAlimento == clave and self.dietaHabitat[self.entradaSTR] == "":
                 return True
         return False
 
-    #Tipo de alimentacion para un habitat
+    # Tipo de alimentacion para un habitat
     def AlimentoHabitat(self, alimentosDispo):
 
         comprobante = self.ComprobanteAlimentos(alimentosDispo)
@@ -37,7 +39,7 @@ class Habitat:
         else:
             print("El dato no coincide con la alimentacion\n")
 
-    #Agregar Habitat
+    # Agregar Habitat
     def agregarHabitat(self):
         validacion = 0
         existe = self.ComprobanteListaHabitat(self.entradaSTR)
