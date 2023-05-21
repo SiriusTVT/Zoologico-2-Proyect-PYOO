@@ -1,65 +1,48 @@
-class Habitat:
-    def __init__(self):
-        self.entradaSTR = ""
-        self.entradaAlimento = ""
-        self.listaHabitats = ["desertico", "selvatico", "polar", "acuatico"]
-        self.AdHabitat = []
+class HabitatINIT:
+    def __init__(self, tipoHabitat, tipoAlimentacion, cupos, temperatura):
+        self._tipoHabitat = tipoHabitat
+        self._tipoAlimentacion = tipoAlimentacion
+        self._cupos = cupos
+        self._animales = []
+        self._temperatura = temperatura
+        self._id = -1
 
-        self.cupos = {"desertico": 0, "selvatico": 0, "polar": 0, "acuatico": 0}
-        self.dietaHabitat = {"desertico": "", "selvatico": "", "polar": "", "acuatico": ""}
-        # los tipos de dieta que se permiten en esa habitat
+    def agregarAnimal(self, animal):
+        animal.setId(self.getOcupados())
+        self._animales.append(animal)
 
-    def Comprobante(self, habitat):
-        for i in self.listaHabitats:
-            if i == habitat.lower():
-                return True
-        return False
+    def getAnimales(self):
+        return self._animales
+    
+    def getAnimal(self, id):
+        return self._animales[id]
 
-    def ComprobanteListaHabitat(self, habitat):
-        for i in self.AdHabitat:
-            if i == habitat:
-                return True
-        return False
+    def getTipoHabitat(self):
+        return self._tipoHabitat
+    
+    def getTipoAliemntacion(self):
+        return self._tipoAlimentacion
+    
+    def getCupos(self):
+        return self._cupos
+    
+    def getTemperatura(self):
+        return self._temperatura
+    
+    def getOcupados(self):
+        return len(self._animales)
+    
+    def getProportion(self):
+        return (f'{self.getOcupados()}/{self.getCupos()}')
+    
+    def quedaCupo(self):
+        return self.getOcupados() < self._cupos
+    
+    def getId(self):
+        return self._id
 
-    # Comprueba el tipo de alimentacion del habitat existe en la dieta disponible
-    def ComprobanteAlimentos(self, alimentos):
-        for clave, valor in alimentos.items():
-            if self.entradaAlimento == clave and self.dietaHabitat[self.entradaSTR] == "":
-                return True
-        return False
+    def setId(self, id):
+        self._id = id
 
-    # Tipo de alimentacion para un habitat
-    def AlimentoHabitat(self, alimentosDispo):
-
-        comprobante = self.ComprobanteAlimentos(alimentosDispo)
-        if comprobante:
-            self.dietaHabitat[self.entradaSTR] = self.entradaAlimento
-            print("Se agrego Correctamente el alimento para esa habitat\n")
-
-        else:
-            print("El dato no coincide con la alimentacion\n")
-
-    # Agregar Habitat
-    def agregarHabitat(self):
-        validacion = 0
-        existe = self.ComprobanteListaHabitat(self.entradaSTR)
-        comprobante = self.Comprobante(self.entradaSTR)
-
-        if existe == False and comprobante == True:
-            self.AdHabitat.append(self.entradaSTR)
-            print("Se agrego Correctamente el habitat\n")
-            validacion = 1
-            return validacion
-
-
-        elif existe == True:
-            print("El Dato YA EXISTE\n")
-
-        else:
-            print("El dato no coincide con los habitas disponibles\n")
-
-    def mostrarCupos(self):
-        print("Cupos en Zoologico")
-        print(self.cupos, "\n")
-        print("Dietas Segun su Habitat")
-        print(self.dietaHabitat, "\n")
+    def asignarHorario(self, id, horario):
+        self._animales[id].setHorario(horario)

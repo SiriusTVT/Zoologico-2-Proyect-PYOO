@@ -2,93 +2,38 @@ import streamlit as st
 
 
 class ControllerZoologico:
-    def __init__(self, modeloZoo, vista, modeloHab, modeloAnimal):
-        self.modeloAnimal = modeloAnimal
+    def __init__(self, modeloHab, modelCom, vista):
         self.modeloHab = modeloHab
-        self.modeloZoo = modeloZoo
+        self.modelCom = modelCom
         self.vista = vista
 
-        self.habitatClase = []
-        self.alimentos = self.modeloZoo.alimentos
-        self.pHabitatAnimal = []
-
-        self.habitat = ""
-        self.comer = ""
-
-    def agregarHabitat(self):
-        validacion = 0
-        print("Habitats Agregados", self.modeloHab.AdHabitat, "\n")
-        print("Habitats Disponibles", self.modeloHab.listaHabitats, "\n")
-        print("Alimentacion Disponibles", self.alimentos, "\n")
-
-        # self.modeloHab.entradaSTR = self.vista.obtener_valorSTR("Ingrese Habitat: ")
-        # self.modeloHab.entradaAlimento = self.vista.obtener_valorSTR("Tipo de alimentacion de habitat: ")
-        validacion = self.modeloHab.agregarHabitat()
-
-        if validacion == 1:
-            self.modeloHab.AlimentoHabitat(self.alimentos)
-            self.habitatClase = self.modeloHab.AdHabitat
-
-    def agregarAnimal(self):
-        if len(self.habitatClase) == 0:
-            print("No hay Habitat Existente")
-        else:
-            self.pHabitatAnimal = self.habitatClase
-
-            self.modeloAnimal.nombre = self.vista.obtener_valorSTR("Nombre: ")
-            self.modeloAnimal.especie = self.vista.obtener_valorSTR("Especie: ")
-            self.modeloAnimal.habitat = self.vista.obtener_valorSTR("Habitat: ")
-            self.modeloAnimal.comer = self.vista.obtener_valorSTR("Comer: ")
-            self.modeloAnimal.juego = self.vista.obtener_valorSTR("Juego: ")
-
-            self.modeloAnimal.edad = self.vista.obtener_valorINT("Edad: ")
-            self.modeloAnimal.dormir = self.vista.obtener_valorINT("Dormir: ")
-
-            self.modeloAnimal.agregarAnimal(self.pHabitatAnimal, self.alimentos, self.modeloHab.dietaHabitat)
-            if self.modeloAnimal.contadorAnimal != 0:
-                self.habitat, self.comer = self.modeloAnimal.cuposHabitatAnimal()
-                self.modeloHab.cupos[self.habitat] += 1
-
-    def mostrarAnimal(self):
-        if self.modeloAnimal.contadorAnimal == 0:
-            print("No hay Animal Existente")
-        else:
-            self.modeloAnimal.mostrarAnimal()
-            self.modeloHab.mostrarCupos()
-
-    def acciones(self, controlador):
-        if self.modeloAnimal.contadorAnimal == 0:
-            print("No hay Animal Existente")
-        else:
-            self.modeloZoo.acciones(controlador)
-
-    def alimentarAnimales(self, alimentos):
-        self.modeloAnimal.alimentarAnimales(alimentos)
-
-    def dormirAnimal(self):
-        self.modeloAnimal.dormirAnimal()
-
-    def jugarAnimal(self):
-        self.modeloAnimal.jugarAnimal()
-
-    def mostrarDatosAlimentos(self):
-        self.modeloZoo.mostrarDatosAlimentos()
-
-    # Menu Streamlit
-
     def menuStreamlit(self, entrada):
-        validacion = 0
         if entrada == 1:
             st.divider()
 
-            habitatsAgregados = self.modeloHab.AdHabitat
-            listaHabitats = self.modeloHab.listaHabitats
-            alimentos = self.alimentos
+            nuevoHabit = self.vista.crearHabitatStreamlit()
 
-            st.write("Habitats Agregados: ", habitatsAgregados)
-            st.write("Habitats Disponibles: ", listaHabitats)
-            st.write("Alimentacion Disponibles: ", alimentos)
+            self.modeloHab.agregarHabitat(nuevoHabit)
 
-            validacion = self.vista.crearHabitatStreamlit()
-            if validacion == 1:
-                self.agregarHabitat()
+            self.vista.mostrarHabitatsAgregados()
+        elif entrada == 2:
+
+            st.divider()
+
+            animal = self.vista.agregarAnimalStreamlit()
+
+            self.modeloHab.agregarAnimal(animal)
+
+        elif entrada == 3:
+            st.divider()
+            ids = self.vista.mostrarAnimales()
+
+            horario = self.vista.inspeccionarAnimal(ids)
+
+            self.modeloHab.asignarHorario(horario, ids)
+
+        elif entrada == 4:
+            st.divider()
+            comida = self.vista.mostrarComidas()
+
+            self.modelCom.agregarComida(comida)

@@ -1,47 +1,21 @@
 import streamlit as st
+import datetime
 
-import model.Zoologico as modelZoo
-import model.Habitat as modelHab
-import model.Animal as modelAnimal
+import model.HabitatFunctions as modelHab
 import controller.ControllerZoologico as controller
+import model.ComidaFunctions as modelCom
+import model.Comida as comida_INIT
+import model.Habitat as Hab_INIT
+import model.Animal as Animal_INIT
+
 
 class ZoologicoView:
-
     def __init__(self):
-        self.habitat = 0
-        self.zoologico = 0
-        self.vista = 0
-        self.animal = 0
-        self.controlador = 0
+        self.habitat = modelHab.Habitat()
+        self.comida = modelCom.ComidaManager()
+        self.controlador = controller.ControllerZoologico(self.habitat, self.comida, self)
 
-    # def obtener_valorSTR(self, mensaje):
-    #     respuesta = 0
-    #     while True:
-    #         try:
-    #             respuesta = input(mensaje)
-    #             int(respuesta)
-    #             print("Error Se esperaba un Cadena y se a ingresado una INT")
-    #             print("Vuelva ingresar:")
-    #         except ValueError:
-    #             break
-    #
-    #     return respuesta
-    #
-    # def obtener_valorINT(self, mensaje):
-    #     while True:
-    #         try:
-    #             respuesta = int(input(mensaje))
-    #             return respuesta
-    #         except ValueError:
-    #             print("Error Se esperaba un INT y se a ingresado una cadena")
-    #             print("Vuelva ingresar:")
-
-    def Zoologico(self, habitat, zoologico, vista, animal, controlador):
-        self.habitat = habitat
-        self.zoologico = zoologico
-        self.vista = vista
-        self.animal = animal
-        self.controlador = controlador
+    def Zoologico(self):
 
         imagen = "img/Zoo_img1.jpeg"
 
@@ -76,26 +50,276 @@ class ZoologicoView:
             self.controlador.menuStreamlit(st.session_state["opcion"])
 
     def crearHabitatStreamlit(self):
-        validacion = 0
         with st.container():
             st.subheader("Formulario para crear un nuevo habitat")
-            habitat = st.text_input("Habitat:")
-            aliHabitat = st.text_input("Tipo de Alimentacion de habitat:")
+            tipoHabitat = st.selectbox("Habitat:", ("", "Desértico", "Selvático", "Polar", "Acuático"))
+            tiposComida = []
+            if tipoHabitat == "Desértico":
+                tiposComida = ["", "Concentrado", "Carne"]
+            elif tipoHabitat == "Selvático":
+                tiposComida = ["", "Concentrado", "Carne", "Frutas"]
+            elif tipoHabitat == "Polar":
+                tiposComida = ["", "Pescado", "Carne"]
+            elif tipoHabitat == "Acuático":
+                tiposComida = ["", "Pescado", "vegetal"]
+            else:
+                tiposComida = [""]
+
+            tipoAlimentacion = st.selectbox("Tipo de Alimentacion de habitat:", tiposComida)
+
+            cupos = st.slider("Maximo numero de animales:", 0, 15, 5, 1)
+
+            temperatura = st.slider("Temperatura del habitat: ", -20, 30, 18, 1)
+
             boton_accion = st.button("Crear nuevo habitat")
 
         if boton_accion:
-            if habitat.isdigit() or habitat == "":
-                raise ValueError("El Habitat debe ser un string y no puede estar vacio")
-            if aliHabitat.isdigit() or aliHabitat == "":
-                raise ValueError("El tipo de alimentacion debe ser un string y no puede estar vacio")
+            if tipoHabitat == "":
+                self.mostrar_mensaje_error("El Habitat no puede estar vacio")
+            elif tipoAlimentacion.isdigit() or tipoAlimentacion == "":
+                self.mostrar_mensaje_error("El tipo de alimentacion no puede estar vacio")
 
-            self.habitat.entradaSTR = habitat
-            self.habitat.entradaAlimento = aliHabitat
+            else:
+                nuevoHabitat = Hab_INIT.HabitatINIT(tipoHabitat, tipoAlimentacion, cupos, temperatura)
 
-            self.mostrar_mensaje_exitoso("El producto fue creado correctamente")
+                self.mostrar_mensaje_exitoso("El Habitat fue creado correctamente")
+                return nuevoHabitat
 
-            validacion = 1
-            return validacion
+    def agregarAnimalStreamlit(self):
+        with st.container():
+            st.subheader("Formulario para añadir un nuevo animal")
+            tipoAnimal = st.text_input("Tipo de animal:")
+            nombre = st.text_input("Nombre del animal")
+            edad = st.slider("Edad:", 0, 100, 0, 1)
+            habitat = st.selectbox("Habitat de residencia:", ("", "Desértico", "Selvático", "Acuático", "Polar"))
+            tipoAlimentacion = st.select_slider("Tipo de alimentacion:", ("Carnivoro", "Omnivoro", "Herbivoro"))
+            tempMin = st.slider("Temperatura minima necesaria", -20, 30, 18, 1)
+            tempMax = st.slider("Temperatura minima necesaria", tempMin, 30, 18, 1)
+
+            st.write("Que come:")
+            pescado = False
+            carne = False
+            fruta = False
+            vegetal = False
+            concentrado = False
+            if tipoAlimentacion in ["Carnivoro", "Omnivoro"]:
+                pescado = st.checkbox("Pescado")
+                carne = st.checkbox("Carne")
+            if tipoAlimentacion in ["Herbivoro", "Omnivoro"]:
+                fruta = st.checkbox("Fruta")
+                vegetal = st.checkbox("vegetal")
+                concentrado = st.checkbox("Concentrado")
+
+            comidas = []
+            if pescado:
+                comidas.append("Pescado")
+            if carne:
+                comidas.append("Carne")
+            if fruta:
+                comidas.append("Fruta")
+            if vegetal:
+                comidas.append("vegetal")
+            if concentrado:
+                comidas.append("Concentrado")
+
+            st.write()
+            habitatsPos = self.habitat.getHabitatsWith(habitat, comidas, tempMin, tempMax)
+            habsDesc = [
+                f'{hab.getId()}: {hab.getTipoHabitat()}, cupos: {hab.getProportion()}, alimentacion: {hab.getTipoAliemntacion()}, temperatura: {hab.getTemperatura()}'
+                for hab in habitatsPos]
+            habSelect = st.radio("Posiles habitats:", habsDesc)
+
+            boton_accion = st.button("Añadir animal")
+
+        if boton_accion:
+            comidas = []
+            if tipoAnimal.isdigit():
+                self.mostrar_mensaje_error("Los numeros no son un tipo de animal valido")
+            elif tipoAnimal == "":
+                self.mostrar_mensaje_error("Escribe el tipo de animal")
+            elif nombre == "":
+                self.mostrar_mensaje_error("Dale un nombre al " + tipoAnimal)
+            elif habitat == "":
+                self.mostrar_mensaje_error("Escoge un habitat")
+            elif not (pescado or carne or fruta or vegetal or concentrado):
+                self.mostrar_mensaje_error("Escoge un tinpo de alimentacion")
+            elif habSelect is None:
+                self.mostrar_mensaje_error("Debes escoger un  habitat")
+            else:
+                comidas = []
+                if pescado:
+                    comidas.append("Pescado")
+                if carne:
+                    comidas.append("Carne")
+                if fruta:
+                    comidas.append("Fruta")
+                if vegetal:
+                    comidas.append("vegetal")
+                if concentrado:
+                    comidas.append("Concentrado")
+                habId = int(habSelect.split(":")[0])
+                animal = Animal_INIT.AnimalINIT(nombre, tipoAnimal, edad, tipoAlimentacion, comidas, tempMin, tempMax)
+
+                self.mostrar_mensaje_exitoso("El Animal fue agregado correctamente")
+                return [animal, habId]
+
+    def mostrarHabitatsAgregados(self):
+        st.divider()
+        with st.container():
+            st.header("Habitats")
+            for hab in self.habitat.getHabitats():
+                if hab is not None:
+                    expander = st.expander(hab.getTipoHabitat())
+                    col1, col2 = expander.columns(2)
+                    col1.write(f'id: {hab.getId()}')
+                    col1.write(f'Ocupacion: {hab.getProportion()}')
+                    col2.write(f'Alimento del habitat: {hab.getTipoAliemntacion()}')
+                    if hab.getTemperatura() > 0:
+                        col2.write(f'Temperatura: **:green[{hab.getTemperatura()}]**')
+                    else:
+                        col2.write(f'Temperatura: **:blue[{hab.getTemperatura()}]**')
+
+    def mostrarAnimales(self):
+        with st.container():
+            animales = []
+            for hab in self.habitat.getHabitats():
+                st.write()
+                animales.extend(
+                    [f'{hab.getId()}.{animal.getId()}; Habitat: {hab.getTipoHabitat()} | Nombre: {animal.getNombre()}'
+                     for animal in hab.getAnimales()])
+            animalSelec = st.radio("Animales", animales)
+
+        if animalSelec is not None:
+            ids = animalSelec.split(";")[0]
+            return ids
+
+    def inspeccionarAnimal(self, ids):
+        st.divider()
+        if ids is not None:
+            animalId = int(ids.split(".")[1])
+            habitatId = int(ids.split(".")[0])
+            animal = self.habitat.getHabitat(habitatId).getAnimal(animalId)
+            with st.container():
+                col1, col2 = st.columns(2)
+                col1.header(animal.getNombre())
+                col1.subheader("Especie:")
+                col1.write(animal.getTipoAnimal())
+                col1.subheader("Edad:")
+                col1.write(f'{animal.getEdad()}')
+                col1.subheader("Tipo de alimentacion:")
+                col1.write(animal.getTipoAlimentacion())
+                col1.subheader("Comidas:")
+                for comida in animal.getComidas():
+                    col1.write(f'{comida}')
+
+                col1.subheader("Temperaturas aceptadas:")
+                if animal.getTempMin() < 0:
+                    tempMin = f'**:blue[{animal.getTempMin()}]**'
+                else:
+                    tempMin = f'**:green[{animal.getTempMin()}]**'
+                if animal.getTempMax() < 0:
+                    tempMax = f'**:blue[{animal.getTempMax()}]**'
+                else:
+                    tempMax = f'**:green[{animal.getTempMax()}]**'
+                col1.write(f'{tempMin} - {tempMax} C')
+
+                col1.subheader("Horarios")
+                if len(animal.getHorarios()["jugar"]) > 0:
+                    juExpander = col1.expander("Jugar")
+                    juExpander.write(f'**:green[Hora inicion:]** {animal.getHorarios()["jugar"][0]["inicio"]}')
+                    juExpander.write(f'**:red[Hora final:]** {animal.getHorarios()["jugar"][0]["final"]}')
+                if len(animal.getHorarios()["dormir"]) > 0:
+                    dorExpander = col1.expander("Dormir")
+                    dorExpander.write(f'**:green[Hora inicion:]** {animal.getHorarios()["dormir"][0]["inicio"]}')
+                    dorExpander.write(f'**:red[Hora final:]** {animal.getHorarios()["dormir"][0]["final"]}')
+                for comida in animal.getHorarios()["comer"]:
+                    comExpander = col1.expander("Comida")
+                    comExpander.write(f'**:green[Hora:]** {comida["inicio"]}')
+                    comExpander.write(f'**:blue[Comida:]** {comida["extra"]["comida"]}')
+                    comExpander.write(f'**:orange[Porciones:]** {comida["extra"]["porciones"]}')
+
+                # col2.image()
+                porSelec = col2.slider("Porciones de comida:", 1, 10, 1, 1)
+                comSelec = col2.selectbox("Comida: ", self.comida.getComidasWith(animal.getComidas()))
+                timeSelecCom = col2.time_input('Hora de la comida', datetime.time(7, 30))
+                aliButton = col2.button("Alimentar")
+                timeSelecDorIn = col2.time_input('Hora de inicio', datetime.time(7, 0))
+                timeSelecDorFin = col2.time_input('Hora de finalizacion', datetime.time(9, 0))
+                dorButton = col2.button("Dormir")
+                timeSelecJuIn = col2.time_input('Hora de inicio', datetime.time(8, 0))
+                timeSelecJuFin = col2.time_input('Hora de finalizacion', datetime.time(8, 30))
+                juButton = col2.button("Jugar")
+
+                if juButton:
+                    if timeSelecJuIn < datetime.time(6, 30) and timeSelecJuFin > datetime.time(18,
+                                                                                               30) and timeSelecJuIn > timeSelecJuFin:
+                        self.mostrar_mensaje_error("Tiempos no validos")
+                    else:
+                        horario = {
+                            "tipo": "jugar",
+                            "inicio": timeSelecJuIn,
+                            "final": timeSelecJuFin,
+                            "extra": {
+                            }
+                        }
+                        return horario
+
+                if aliButton:
+                    if timeSelecCom < datetime.time(6, 30) and timeSelecCom > datetime.time(18, 30):
+                        self.mostrar_mensaje_error("En estos tiempos no esta permitida la comida")
+                    else:
+                        horario = {
+                            "tipo": "comer",
+                            "inicio": timeSelecCom,
+                            "final": timeSelecCom,
+                            "extra": {
+                                "comida": comSelec,
+                                "porciones": porSelec
+                            }
+                        }
+                        return horario
+
+                if dorButton:
+                    if timeSelecDorIn < datetime.time(18, 30) or timeSelecDorFin > datetime.time(22, 0):
+                        self.mostrar_mensaje_error("Acostado fuera de tiempo")
+                    elif not (timeSelecDorIn <= datetime.time(6, 0) or timeSelecDorIn >= timeSelecDorIn):
+                        self.mostrar_mensaje_error("Tiempo no valido")
+                    else:
+                        horario = {
+                            "tipo": "dormir",
+                            "inicio": timeSelecDorIn,
+                            "final": timeSelecDorFin,
+                            "extra": {
+                            }
+                        }
+                        return horario
+
+    def mostrarComidas(self):
+        with st.container():
+            st.header("Comidas")
+            col1, col2 = st.columns(2)
+            col1.subheader("Nuevo alimento")
+            nombre = col1.text_input("Nombre del alimento:")
+            tipo = col1.select_slider("Tipo de alimento:", ["Pescado", "Carne", "Fruta", "vegetal", "Concentrado"])
+            button = col1.button("Agregar")
+
+            for comida in self.comida.getComidas():
+                expander = col2.expander(f'{comida}:')
+                expander.write(self.comida.getComida(comida).getTipo())
+
+            if button:
+                if nombre == "":
+                    self.mostrar_mensaje_error("El nombre no puede estar vacio")
+                elif not nombre.isalnum():
+                    self.mostrar_mensaje_error("Los caracteres no son validos")
+                else:
+                    nombre = nombre.upper()
+                    if nombre in self.comida.getComidas():
+                        self.mostrar_mensaje_error("Comida ya existente")
+                    else:
+                        comida = comida_INIT.ComidaINIT(nombre, tipo)
+                        self.mostrar_mensaje_exitoso("Nueva comida creada")
+                        return comida
 
     def mostrar_mensaje_exitoso(self, mensaje):
         st.success(mensaje)
