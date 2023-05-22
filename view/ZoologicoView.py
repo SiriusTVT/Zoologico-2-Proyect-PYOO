@@ -15,7 +15,7 @@ class ZoologicoView:
         self.comida = modelCom.ComidaManager()
         self.controlador = controller.ControllerZoologico(self.habitat, self.comida, self)
 
-    def Zoologico(self):
+    def Zoologico(self):  # Menu inicial del Zoologico
 
         imagen = "img/Zoo_img1.jpeg"
 
@@ -31,11 +31,12 @@ class ZoologicoView:
             col2.header("Añadir-Animal")
             botoHabitat = col2.button("Acceder a esta opción", 2)
 
-            col1, col2 = st.columns(2)
             col1.header("Mostrar-Animales")
             botonMostrarAnimal = col1.button("Acceder a esta opción", 3)
             col2.header("Mostrar-Alimentos")
             botonMostrarAlimentos = col2.button("Acceder a esta opción", 4)
+            st.divider()
+            botonInf = col1.button("Mas informacion")
 
         if botonAnimal:
             st.session_state["opcion"] = 1
@@ -45,11 +46,13 @@ class ZoologicoView:
             st.session_state["opcion"] = 3
         elif botonMostrarAlimentos:
             st.session_state["opcion"] = 4
+        elif botonInf:
+            st.session_state["opcion"] = 5
 
         if "opcion" in st.session_state:
             self.controlador.menuStreamlit(st.session_state["opcion"])
 
-    def crearHabitatStreamlit(self):
+    def crearHabitatStreamlit(self):  # Crear nuevo habitat
         with st.container():
             st.subheader("Formulario para crear un nuevo habitat")
             tipoHabitat = st.selectbox("Habitat:", ("", "Desértico", "Selvático", "Polar", "Acuático"))
@@ -70,7 +73,32 @@ class ZoologicoView:
             cupos = st.slider("Maximo numero de animales:", 0, 15, 5, 1)
 
             temperatura = st.slider("Temperatura del habitat: ", -20, 30, 18, 1)
-
+            extra = {}
+            st.subheader("Otras opciones")
+            if tipoHabitat == "Desértico":
+                extra["Lago"] = "Si" if st.checkbox("Laguito") else "No"
+                extra["Piedra"] = "Si" if st.checkbox("Monticulo de piedra") else "No"
+            elif tipoHabitat == "Selvático":
+                extra["Sonidos de ambientacion"] = "Si" if st.checkbox("Sonidos de ambientacion") else "No"
+                extra["Vegetacion"] = {}
+                vegetaciones = ["Arboles", "Arbustos", "Flores"]
+                st.write("Vegetacion del habitat:")
+                numero = 0
+                for veg in vegetaciones:
+                    extra["Vegetacion"][veg] = "Si" if st.checkbox(f'{veg}', key=f'veg{numero}') else "No"
+                    numero += 1
+            elif tipoHabitat == "Polar":
+                extra["Iluminacion"] = st.select_slider("Tipo de iluminacion:", ["OLED", "LED", "Bombillas"])
+                extra["Agua"] = "Si" if st.checkbox("Agua en el habitat") else "No"
+            elif tipoHabitat == "Acuático":
+                extra["Iluminacion"] = st.slider("Intencidad de luz", 0, 100, 80, 1)
+                extra["Decoracion"] = {}
+                decoraciones = ["Algas", "Corales", "Estrella de mar", "Cofre de tesoro", "Corales"]
+                st.write("Decoraciones del habitat:")
+                numero = 0
+                for dec in decoraciones:
+                    extra["Decoracion"][dec] = "Si" if st.checkbox(f'{dec}', key=f'dec{numero}') else "No"
+                    numero += 1
             boton_accion = st.button("Crear nuevo habitat")
 
         if boton_accion:
@@ -78,14 +106,13 @@ class ZoologicoView:
                 self.mostrar_mensaje_error("El Habitat no puede estar vacio")
             elif tipoAlimentacion.isdigit() or tipoAlimentacion == "":
                 self.mostrar_mensaje_error("El tipo de alimentacion no puede estar vacio")
-
             else:
-                nuevoHabitat = Hab_INIT.HabitatINIT(tipoHabitat, tipoAlimentacion, cupos, temperatura)
+                nuevoHabitat = Hab_INIT.HabitatINIT(tipoHabitat, tipoAlimentacion, cupos, temperatura, extra)
 
                 self.mostrar_mensaje_exitoso("El Habitat fue creado correctamente")
                 return nuevoHabitat
 
-    def agregarAnimalStreamlit(self):
+    def agregarAnimalStreamlit(self):  # Crear nuevo Animal
         with st.container():
             st.subheader("Formulario para añadir un nuevo animal")
             tipoAnimal = st.text_input("Tipo de animal:")
@@ -94,7 +121,7 @@ class ZoologicoView:
             habitat = st.selectbox("Habitat de residencia:", ("", "Desértico", "Selvático", "Acuático", "Polar"))
             tipoAlimentacion = st.select_slider("Tipo de alimentacion:", ("Carnivoro", "Omnivoro", "Herbivoro"))
             tempMin = st.slider("Temperatura minima necesaria", -20, 30, 18, 1)
-            tempMax = st.slider("Temperatura minima necesaria", tempMin, 30, 18, 1)
+            tempMax = st.slider("Temperatura maxima necesaria", tempMin, 30, 18, 1)
 
             st.write("Que come:")
             pescado = False
@@ -163,7 +190,7 @@ class ZoologicoView:
                 self.mostrar_mensaje_exitoso("El Animal fue agregado correctamente")
                 return [animal, habId]
 
-    def mostrarHabitatsAgregados(self):
+    def mostrarHabitatsAgregados(self):  # Mostrar habitats Agregados
         st.divider()
         with st.container():
             st.header("Habitats")
@@ -172,14 +199,35 @@ class ZoologicoView:
                     expander = st.expander(hab.getTipoHabitat())
                     col1, col2 = expander.columns(2)
                     col1.write(f'id: {hab.getId()}')
-                    col1.write(f'Ocupacion: {hab.getProportion()}')
+                    if hab.quedaCupo():
+                        col1.write(f'Ocupacion: **:green[{hab.getProportion()}]**')
+                    else:
+                        col1.write(f'Ocupacion: **:green[{hab.getProportion()}]**')
                     col2.write(f'Alimento del habitat: {hab.getTipoAliemntacion()}')
                     if hab.getTemperatura() > 0:
                         col2.write(f'Temperatura: **:green[{hab.getTemperatura()}]**')
                     else:
                         col2.write(f'Temperatura: **:blue[{hab.getTemperatura()}]**')
+                    extras = hab.getExtra()
+                    numero = 0
+                    for extra in extras.keys():
+                        if numero % 2 != 0:
+                            if type(extras[extra]) == dict:
+                                col1.write(extra)
+                                for ex in extras[extra].keys():
+                                    col1.write(f'{ex}: **:green[{extras[extra][ex]}]**')
+                            else:
+                                col1.write(f'{extra}: **:green[{extras[extra]}]**')
+                        else:
+                            if type(extras[extra]) == dict:
+                                col2.write(extra)
+                                for ex in extras[extra].keys():
+                                    col2.write(f'{ex}: **:green[{extras[extra][ex]}]**')
+                            else:
+                                col2.write(f'{extra}: **:green[{extras[extra]}]**')
+                        numero += 1
 
-    def mostrarAnimales(self):
+    def mostrarAnimales(self):  # Mostrar animales agregados
         with st.container():
             animales = []
             for hab in self.habitat.getHabitats():
@@ -193,7 +241,7 @@ class ZoologicoView:
             ids = animalSelec.split(";")[0]
             return ids
 
-    def inspeccionarAnimal(self, ids):
+    def inspeccionarAnimal(self, ids):  # Acciones del Zoologico
         st.divider()
         if ids is not None:
             animalId = int(ids.split(".")[1])
@@ -251,8 +299,8 @@ class ZoologicoView:
                 juButton = col2.button("Jugar")
 
                 if juButton:
-                    if timeSelecJuIn < datetime.time(6, 30) and timeSelecJuFin > datetime.time(18,
-                                                                                               30) and timeSelecJuIn > timeSelecJuFin:
+                    if datetime.time(6, 30) > timeSelecJuIn > timeSelecJuFin > datetime.time(18,
+                                                                                             30):
                         self.mostrar_mensaje_error("Tiempos no validos")
                     else:
                         horario = {
@@ -265,7 +313,7 @@ class ZoologicoView:
                         return horario
 
                 if aliButton:
-                    if timeSelecCom < datetime.time(6, 30) and timeSelecCom > datetime.time(18, 30):
+                    if datetime.time(6, 30) > timeSelecCom > datetime.time(18, 30):
                         self.mostrar_mensaje_error("En estos tiempos no esta permitida la comida")
                     else:
                         horario = {
@@ -294,7 +342,7 @@ class ZoologicoView:
                         }
                         return horario
 
-    def mostrarComidas(self):
+    def mostrarComidas(self): # Mostrar alimento agregado
         with st.container():
             st.header("Comidas")
             col1, col2 = st.columns(2)
@@ -320,6 +368,9 @@ class ZoologicoView:
                         comida = comida_INIT.ComidaINIT(nombre, tipo)
                         self.mostrar_mensaje_exitoso("Nueva comida creada")
                         return comida
+
+    def masInformacion(self):
+        pass
 
     def mostrar_mensaje_exitoso(self, mensaje):
         st.success(mensaje)

@@ -19,7 +19,7 @@ class ComidaManager:
 
     def getComidas(self):
         return list(self._comidas.keys())
-    
+
     def getComidasWith(self, tipos):
         comidas = []
         for comida in self.getComidas():

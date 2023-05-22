@@ -5,6 +5,6 @@ class ComidaINIT:
 
     def getNombre(self):
         return self._nombre
-    
+
     def getTipo(self):
         return self._tipo

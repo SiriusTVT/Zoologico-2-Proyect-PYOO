@@ -20,7 +20,7 @@ class AnimalINIT:
 
     def getNombre(self):
         return self._nombre
-    
+
     def getEdad(self):
         return self._edad
 
@@ -29,19 +29,19 @@ class AnimalINIT:
 
     def getComidas(self):
         return self._comidas
-    
+
     def getTipoAnimal(self):
         return self._tipoAnimal
-    
+
     def getId(self):
         return self._id
-    
+
     def getTempMin(self):
         return self._tempMin
-    
+
     def getTempMax(self):
         return self._tempMax
-    
+
     def setId(self, id):
         self._id = id
 
