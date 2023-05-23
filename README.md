@@ -1,4 +1,7 @@
 # Proyecto de Simulación de Zoológico
+
+- https://lucid.app/lucidspark/5cabdea8-3511-4154-9a18-b69ef1d07f41/edit?viewport_loc=-1071%2C-1630%2C1920%2C937%2C0_0&invitationId=inv_8f9d545f-cbb4-4ab5-b230-3bed8ba6559d
+
 Este proyecto tiene como objetivo simular el funcionamiento de un zoológico utilizando el lenguaje de programación Python y los conceptos de programación orientada a objetos. El programa incluye la creación de clases, relaciones, herencia, sobrescritura de métodos, sobrecarga de métodos, modificadores de acceso e interfaces gráficas de usuario.
 
 El zoológico se compone de diferentes hábitats, cada uno de los cuales puede contener varios animales. Cada animal tiene un nombre, especie y hábitat al que pertenece, entre otros atributos.
